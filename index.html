@@ -4,7 +4,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/pixi-viewport@4.11.1/dist/viewport.js"></script>
     </head>
-    <body></body>
+    <body>
+        <div id="container"></div>
+        <button style="width: 100px; height: 30px; font-size: medium; position: absolute;" id="toggle"> start </button>
+    </body>
     <style>
         * {
             margin: 0;
@@ -14,105 +17,51 @@
             margin: none !important;
         }
     </style>
+    <script src="./setup.js"></script>
     <script>
-        const WIDTH = 750;
-        const HEIGHT = 750;
-        const CELL_WIDTH = 25;
-        const CELL_HEIGHT = 25;
-        const WORLD_WIDTH = 5000;
-        const WORLD_HEIGHT = 5000;
-        const app = new PIXI.Application({
-            height: HEIGHT,
-            width: WIDTH,
-        });
-        const viewport = new Viewport.Viewport({
-            screenWidth: WIDTH,
-            screenHeight: HEIGHT,
-            worldWidth: WORLD_WIDTH,
-            worldHeight: WORLD_HEIGHT,
-            interaction: app.renderer.plugins.interaction
-        });
 
-        app.stage.addChild(viewport)
-        viewport
-            .drag()
-            .pinch();
+        // If the cell is alive, then it stays alive if it has either 2 or 3 live neighbors
+        // If the cell is dead, then it springs to life only in the case that it has 3 live neighbors
+        const runGame = () => {
+            if (ticks % INTERVAL === 0){   
+                const tilesToUpdate = [];
+                tiles.forEach((row) => {
+                    row.forEach((tile) => {
+                        const neighbors = getNeighbors(tile);
+                        let aliveNeighbors = 0;
+                        neighbors.forEach((neighbor) => {
+                            const x = Math.floor(tile.x / CELL_WIDTH);
+                            const y = Math.floor(tile.y / CELL_HEIGHT);
+                            if (neighbor.isAlive){
+                                aliveNeighbors += 1;
+                            }
+                        });
 
-        viewport.position.x = -WORLD_WIDTH / 2
-        viewport.position.y = -WORLD_HEIGHT / 2;
-
-        viewport.on("clicked", (event) => {
-            const xIndex = Math.floor(event.world.x / CELL_WIDTH);
-            const yIndex = Math.floor(event.world.y / CELL_HEIGHT);            
-            const tile = tiles[yIndex][xIndex];
-
-            tile.isAlive = !tile.isAlive;
-            if(tile.isAlive){
-                tile.graphics.beginFill(0xFFFF00)
-                tile.graphics.drawRect(tile.x, tile.y, CELL_WIDTH, CELL_HEIGHT);
-            } else {
-                tile.graphics.clear();
+                        if (tile.isAlive && aliveNeighbors !== 2 && aliveNeighbors !== 3){
+                            // tile dies
+                            // tile.isAlive = false;
+                            tilesToUpdate.push({
+                                 x: Math.floor(tile.x / CELL_WIDTH),
+                                 y: Math.floor(tile.y / CELL_HEIGHT),
+                                 isAlive: false
+                            })
+                        }
+                        if (!tile.isAlive && (aliveNeighbors === 3)){
+                            // debugger;
+                            // tile.isAlive = true;
+                            tilesToUpdate.push({
+                                x: Math.floor(tile.x / CELL_WIDTH),
+                                y: Math.floor(tile.y / CELL_HEIGHT),
+                                isAlive: true
+                            })
+                        }
+                    }); // Loop tiles
+                }); // Loop rows
+                tilesToUpdate.forEach((update) => {
+                    tiles[update.y][update.x].isAlive = update.isAlive;
+                })
             }
-            const neighbors = getNeighbors(tile);
-            neighbors.forEach((neighbor) => {
-                // debugger;
-                console.log(neighbor)
-                neighbor.graphics.beginFill(0x0000FF)
-                neighbor.graphics.drawRect(neighbor.x, neighbor.y, CELL_WIDTH, CELL_HEIGHT);
-            });
-        })
-
-
-        const grid = new PIXI.Graphics();
-        const tiles = []
-        grid.lineStyle(1, 0xFFFFFF);
-        
-        for(let y = 0; y < WORLD_HEIGHT; y += CELL_HEIGHT){
-            grid.moveTo(0, y)
-                .lineTo(WORLD_WIDTH, y);
+            ticks += 1;
         }
-
-        for (let x = 0; x < WORLD_WIDTH; x += CELL_WIDTH){
-            grid.moveTo(x, 0)
-                .lineTo(x, WORLD_HEIGHT);
-        }
-
-        for (let y = 0; y < WORLD_HEIGHT; y += CELL_HEIGHT){
-            const row = []
-            for(let x = 0; x < WORLD_WIDTH; x += CELL_WIDTH){
-                const graphics = new PIXI.Graphics();
-                row.push({
-                    y,
-                    x,
-                    graphics,
-                    isAlive: false,
-                });
-                viewport.addChild(graphics)
-            }
-            tiles.push(row)
-        }
-
-        viewport.addChild(grid);
-
-        document.body.appendChild(app.view);
-
-        const getNeighbors = (tile) => {
-            const neighbors = [];
-            const x = Math.floor(tile.x / CELL_WIDTH);
-            const y = Math.floor(tile.y / CELL_HEIGHT);
-            neighbors.push(tiles[y - 1][x - 1]);
-            neighbors.push(tiles[y - 1][x]);
-            neighbors.push(tiles[y - 1][x + 1]);
-            neighbors.push(tiles[y][x - 1]);
-            neighbors.push(tiles[y][x + 1]);
-            neighbors.push(tiles[y + 1][x - 1]);
-            neighbors.push(tiles[y + 1][x]);
-            neighbors.push(tiles[y + 1][x + 1]);
-            return neighbors;
-        }
-
-
-
-
     </script>
 </html>
