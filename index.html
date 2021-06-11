@@ -5,10 +5,35 @@
         <script src="https://cdn.jsdelivr.net/npm/pixi-viewport@4.11.1/dist/viewport.js"></script>
     </head>
     <body>
+        <div class="header">
+            <h2> conway's game of life</h2>
+            <hr/>
+        </div>
         <div id="container"></div>
-        <button style="width: 100px; height: 30px; font-size: medium; position: absolute;" id="toggle"> start </button>
+        <div class="tool-bar">
+            <button id="toggle"> start </button>
+            <button id="clear"> clear </button>
+        </div>
     </body>
     <style>
+        #toggle {
+            width: 5em;
+            height: 3em;
+        }
+        #clear {
+            width: 5em;
+            height: 3em;
+        }
+        .tool-bar {
+            text-align: center;
+        }
+        .header {
+            text-align: center;
+            padding: 1em 1em;
+        }
+        #container {
+            text-align: center;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -38,8 +63,6 @@
                         });
 
                         if (tile.isAlive && aliveNeighbors !== 2 && aliveNeighbors !== 3){
-                            // tile dies
-                            // tile.isAlive = false;
                             tilesToUpdate.push({
                                  x: Math.floor(tile.x / CELL_WIDTH),
                                  y: Math.floor(tile.y / CELL_HEIGHT),
@@ -47,8 +70,6 @@
                             })
                         }
                         if (!tile.isAlive && (aliveNeighbors === 3)){
-                            // debugger;
-                            // tile.isAlive = true;
                             tilesToUpdate.push({
                                 x: Math.floor(tile.x / CELL_WIDTH),
                                 y: Math.floor(tile.y / CELL_HEIGHT),

@@ -1,13 +1,11 @@
-
-var TEST = "hello";
 let ticks = 0;
 const INTERVAL = 60;
 const WIDTH = 750;
-const HEIGHT = 750;
-const CELL_WIDTH = 25;
-const CELL_HEIGHT = 25;
-const WORLD_WIDTH = 2500;
-const WORLD_HEIGHT = 2500;
+const HEIGHT = 600;
+const CELL_WIDTH = 15;
+const CELL_HEIGHT = 15;
+const WORLD_WIDTH = 2550;
+const WORLD_HEIGHT = 2550;
 const app = new PIXI.Application({
     height: HEIGHT,
     width: WIDTH,
@@ -49,16 +47,24 @@ document.getElementById("toggle").addEventListener("click", (event) => {
     }
 });
 
+document.getElementById("clear").addEventListener("click", (event) => {
+    tiles.forEach((row) => {
+        row.forEach((tile) => {
+            tile.isAlive = false;
+        });
+    });
+});
+
 const grid = new PIXI.Graphics();
 const tiles = []
 grid.lineStyle(1, 0xFFFFFF);
 
-for(let y = 0; y < WORLD_HEIGHT; y += CELL_HEIGHT){
+for(let y = 0; y <= WORLD_HEIGHT; y += CELL_HEIGHT){
     grid.moveTo(0, y)
         .lineTo(WORLD_WIDTH, y);
 }
 
-for (let x = 0; x < WORLD_WIDTH; x += CELL_WIDTH){
+for (let x = 0; x <= WORLD_WIDTH; x += CELL_WIDTH){
     grid.moveTo(x, 0)
         .lineTo(x, WORLD_HEIGHT);
 }
