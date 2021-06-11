@@ -44,6 +44,29 @@
     </style>
     <script src="./setup.js"></script>
     <script>
+        const getNeighbors = (tile) => {
+            const neighbors = [];
+            const x = Math.floor(tile.x / CELL_WIDTH);
+            const y = Math.floor(tile.y / CELL_HEIGHT);
+
+            // Skip edges of the board
+            if (x - 1 < 0 ||
+                x + 1 > ((WORLD_WIDTH / CELL_WIDTH) - 1) ||
+                y - 1 < 0 ||
+                y + 1 >= ((WORLD_HEIGHT / CELL_HEIGHT) - 1)){
+                    return neighbors;
+                }
+
+            neighbors.push(tiles[y - 1][x - 1]);
+            neighbors.push(tiles[y - 1][x]);
+            neighbors.push(tiles[y - 1][x + 1]);
+            neighbors.push(tiles[y][x - 1]);
+            neighbors.push(tiles[y][x + 1]);
+            neighbors.push(tiles[y + 1][x - 1]);
+            neighbors.push(tiles[y + 1][x]);
+            neighbors.push(tiles[y + 1][x + 1]);
+            return neighbors;
+        }
 
         // If the cell is alive, then it stays alive if it has either 2 or 3 live neighbors
         // If the cell is dead, then it springs to life only in the case that it has 3 live neighbors
@@ -78,6 +101,7 @@
                         }
                     }); // Loop tiles
                 }); // Loop rows
+                
                 tilesToUpdate.forEach((update) => {
                     tiles[update.y][update.x].isAlive = update.isAlive;
                 })

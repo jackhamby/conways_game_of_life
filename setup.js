@@ -19,13 +19,13 @@ const viewport = new Viewport.Viewport({
 });
 
 document.getElementById("container").appendChild(app.view);
-app.stage.addChild(viewport)
+app.stage.addChild(viewport);
 viewport
     .drag()
     .pinch();
 
-viewport.position.x = -WORLD_WIDTH / 2 + WIDTH
-viewport.position.y = -WORLD_HEIGHT / 2 + HEIGHT
+viewport.position.x = -WORLD_WIDTH / 2 + WIDTH;
+viewport.position.y = -WORLD_HEIGHT / 2 + HEIGHT;
 
 viewport.on("clicked", (event) => {
     const xIndex = Math.floor(event.world.x / CELL_WIDTH);
@@ -56,7 +56,7 @@ document.getElementById("clear").addEventListener("click", (event) => {
 });
 
 const grid = new PIXI.Graphics();
-const tiles = []
+const tiles = [];
 grid.lineStyle(1, 0xFFFFFF);
 
 for(let y = 0; y <= WORLD_HEIGHT; y += CELL_HEIGHT){
@@ -79,44 +79,19 @@ for (let y = 0; y < WORLD_HEIGHT; y += CELL_HEIGHT){
             graphics,
             isAlive: false,
         });
-        viewport.addChild(graphics)
+        viewport.addChild(graphics);
     }
-    tiles.push(row)
+    tiles.push(row);
 }
 
 viewport.addChild(grid);
-
-
-const getNeighbors = (tile) => {
-    const neighbors = [];
-    const x = Math.floor(tile.x / CELL_WIDTH);
-    const y = Math.floor(tile.y / CELL_HEIGHT);
-
-    // Skip edges of the board
-    if (x - 1 < 0 ||
-        x + 1 > ((WORLD_WIDTH / CELL_WIDTH) - 1) ||
-        y - 1 < 0 ||
-        y + 1 >= ((WORLD_HEIGHT / CELL_HEIGHT) - 1)){
-            return neighbors;
-        }
-
-    neighbors.push(tiles[y - 1][x - 1]);
-    neighbors.push(tiles[y - 1][x]);
-    neighbors.push(tiles[y - 1][x + 1]);
-    neighbors.push(tiles[y][x - 1]);
-    neighbors.push(tiles[y][x + 1]);
-    neighbors.push(tiles[y + 1][x - 1]);
-    neighbors.push(tiles[y + 1][x]);
-    neighbors.push(tiles[y + 1][x + 1]);
-    return neighbors;
-}
 
 app.ticker.add(() => {
     tiles.forEach((row) => {
         row.forEach((tile) => {
             tile.graphics.clear();
             if(tile.isAlive){
-                tile.graphics.beginFill(0xFFFF00)
+                tile.graphics.beginFill(0xFFFF00);
                 tile.graphics.drawRect(tile.x, tile.y, CELL_WIDTH, CELL_HEIGHT);
             }
         })
