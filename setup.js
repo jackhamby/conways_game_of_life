@@ -1,9 +1,14 @@
+const isMobile = () => {
+    return (window.screen.height < 768);
+  };
+  
 let ticks = 0;
 const INTERVAL = 60;
 const WIDTH = 750;
-const HEIGHT = 600;
-const CELL_WIDTH = 15;
-const CELL_HEIGHT = 15;
+const HEIGHT = isMobile() ? 800 :  600;
+// const HEIGHT = 
+const CELL_WIDTH = isMobile() ? 50: 15;
+const CELL_HEIGHT = isMobile() ? 50: 15;
 const WORLD_WIDTH = 2550;
 const WORLD_HEIGHT = 2550;
 const app = new PIXI.Application({
