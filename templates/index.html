@@ -11,16 +11,31 @@
         </div>
         <div id="container"></div>
         <div class="tool-bar">
-            <button id="toggle"> start </button>
-            <button id="clear"> clear </button>
+            <button id="toggle" class="control-button"> start </button>
+            <button id="clear" class="control-button"> clear </button>
+            <label class="delay-label">delay</label>
+            <input id="delay" type="text" value="6" disabled/> 
+            <button id="decreaseDelay" class="delay-button">-</button>
+            /
+            <button id="increaseDelay" class="delay-button">+</button>
+
         </div>
     </body>
     <style>
-        #toggle {
-            width: 5em;
-            height: 3em;
+        #delay {
+            max-width: 2em;
         }
-        #clear {
+
+        .delay-label {
+            margin-left: 4em;
+        }
+
+        .delay-button{
+            width: 2em;
+            height: 2em;
+        }
+
+        .control-button {
             width: 5em;
             height: 3em;
         }
@@ -83,7 +98,7 @@
         // If the cell is alive, then it stays alive if it has either 2 or 3 live neighbors
         // If the cell is dead, then it springs to life only in the case that it has 3 live neighbors
         const runGame = () => {
-            if (ticks % INTERVAL === 0){   
+            if (ticks % interval === 0){   
                 const tilesToUpdate = [];
                 tiles.forEach((row) => {
                     row.forEach((tile) => {

@@ -1,12 +1,13 @@
 const isMobile = () => {
-    return (window.screen.height < 768);
+    return (window.innerWidth < 850);
   };
   
 let ticks = 0;
-const INTERVAL = 60;
+let interval = 60;
+let intervalIncrement = 10;
+
 const WIDTH = 750;
 const HEIGHT = isMobile() ? 800 :  600;
-// const HEIGHT = 
 const CELL_WIDTH = isMobile() ? 50: 15;
 const CELL_HEIGHT = isMobile() ? 50: 15;
 const WORLD_WIDTH = 2550;
@@ -58,6 +59,19 @@ document.getElementById("clear").addEventListener("click", (event) => {
             tile.isAlive = false;
         });
     });
+});
+
+document.getElementById("increaseDelay").addEventListener("click", (event) => {
+    interval += intervalIncrement;
+    document.getElementById("delay").value = interval / 10;
+});
+
+document.getElementById("decreaseDelay").addEventListener("click", (event) => {
+    if (interval - intervalIncrement <= 0){
+        return;
+    }
+    interval -= intervalIncrement;
+    document.getElementById("delay").value = interval / 10;
 });
 
 const grid = new PIXI.Graphics();
